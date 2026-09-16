@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import com.anilab.ui.home.HomeScreen
 
 private data class NavDestination(
     val label: String,
@@ -89,7 +90,11 @@ fun AniLabApp() {
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
                     label = "screenTransition"
                 ) { index ->
-                    FoundationPlaceholderScreen(destinations[index].label)
+                    if (index == 0) {
+                        HomeScreen()
+                    } else {
+                        FoundationPlaceholderScreen(destinations[index].label)
+                    }
                 }
             }
 
