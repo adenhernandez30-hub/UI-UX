@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -129,14 +128,14 @@ private fun AniLabBottomBar(
         modifier = Modifier
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.navigationBars)
-            .padding(bottom = 12.dp),
+            .padding(bottom = 10.dp),
         contentAlignment = Alignment.Center
     ) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .height(56.dp)
-                .clip(RoundedCornerShape(28.dp)),
+                .fillMaxWidth(0.82f)
+                .height(52.dp)
+                .clip(RoundedCornerShape(26.dp)),
             tonalElevation = 8.dp,
             shadowElevation = 8.dp,
             color = MaterialTheme.colorScheme.surface
@@ -144,7 +143,7 @@ private fun AniLabBottomBar(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 6.dp, vertical = 6.dp),
+                    .padding(horizontal = 5.dp, vertical = 5.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -154,8 +153,8 @@ private fun AniLabBottomBar(
                         onClick = { onSelected(index) },
                         modifier = Modifier
                             .weight(1f)
-                            .height(44.dp),
-                        shape = RoundedCornerShape(22.dp),
+                            .height(42.dp),
+                        shape = RoundedCornerShape(21.dp),
                         color = if (selected) {
                             MaterialTheme.colorScheme.primaryContainer
                         } else {
@@ -165,7 +164,7 @@ private fun AniLabBottomBar(
                         Row(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 4.dp),
+                                .padding(horizontal = 3.dp),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -181,7 +180,7 @@ private fun AniLabBottomBar(
                             if (selected) {
                                 Text(
                                     text = destination.label,
-                                    modifier = Modifier.padding(start = 4.dp),
+                                    modifier = Modifier.padding(start = 3.dp),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.primary,
                                     maxLines = 1
