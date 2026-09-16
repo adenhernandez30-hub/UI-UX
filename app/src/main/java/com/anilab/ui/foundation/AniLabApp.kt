@@ -5,12 +5,13 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,16 +19,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 
@@ -48,7 +49,7 @@ private data class NavDestination(
 private val destinations = listOf(
     NavDestination("Home", Icons.Filled.Home),
     NavDestination("Calendar", Icons.Filled.CalendarMonth),
-    NavDestination("Social", Icons.Filled.Smartphone),
+    NavDestination("Social", Icons.Filled.Forum),
     NavDestination("Library", Icons.Filled.Star),
     NavDestination("Profile", Icons.Filled.Person)
 )
@@ -124,29 +125,71 @@ private fun AniLabBottomBar(
     selectedIndex: Int,
     onSelected: (Int) -> Unit
 ) {
-    Surface(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.navigationBars),
-        tonalElevation = 3.dp,
-        color = MaterialTheme.colorScheme.surface
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .padding(bottom = 12.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .height(56.dp)
+                .clip(RoundedCornerShape(28.dp)),
+            tonalElevation = 8.dp,
+            shadowElevation = 8.dp,
+            color = MaterialTheme.colorScheme.surface
         ) {
-            destinations.forEachIndexed { index, destination ->
-                NavigationBarItem(
-                    selected = selectedIndex == index,
-                    onClick = { onSelected(index) },
-                    icon = { Icon(destination.icon, contentDescription = destination.label) },
-                    label = { Text(destination.label) },
-                    colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                        selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        selectedTextColor = MaterialTheme.colorScheme.primary
-                    )
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 6.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                destinations.forEachIndexed { index, destination ->
+                    val selected = selectedIndex == index
+                    Surface(
+                        onClick = { onSelected(index) },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(44.dp),
+                        shape = RoundedCornerShape(22.dp),
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.primaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.surface
+                        }
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 4.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                destination.icon,
+                                contentDescription = destination.label,
+                                tint = if (selected) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                }
+                            )
+                            if (selected) {
+                                Text(
+                                    text = destination.label,
+                                    modifier = Modifier.padding(start = 4.dp),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    maxLines = 1
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
