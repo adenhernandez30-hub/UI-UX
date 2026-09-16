@@ -40,7 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
-private data class HomeAnime(
+data class HomeAnime(
     val title: String,
     val subtitle: String,
     val image: String
@@ -100,27 +100,14 @@ private fun HomeTopBar(onSearch: () -> Unit, onNotifications: () -> Unit) {
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text("AniLab", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-            Text(
-                "What are you watching today?",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Text("What are you watching today?", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        IconButton(onClick = onSearch) {
-            Icon(Icons.Filled.Search, contentDescription = "Search")
-        }
-        IconButton(onClick = onNotifications) {
-            Icon(Icons.Filled.NotificationsNone, contentDescription = "Notifications")
-        }
+        IconButton(onClick = onSearch) { Icon(Icons.Filled.Search, contentDescription = "Search") }
+        IconButton(onClick = onNotifications) { Icon(Icons.Filled.NotificationsNone, contentDescription = "Notifications") }
         Box(
-            modifier = Modifier
-                .size(38.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer),
+            modifier = Modifier.size(38.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
-        ) {
-            Text("S", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
-        }
+        ) { Text("S", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer) }
     }
 }
 
@@ -134,37 +121,10 @@ private fun FeaturedBanner(anime: HomeAnime, onClick: (HomeAnime) -> Unit) {
             .clip(RoundedCornerShape(24.dp))
             .clickable { onClick(anime) }
     ) {
-        AsyncImage(
-            model = anime.image,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
-            alpha = 0.42f
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        listOf(Color.Transparent, Color(0xFF0D0D10).copy(alpha = 0.98f))
-                    )
-                )
-        )
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(18.dp),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            AsyncImage(
-                model = anime.image,
-                contentDescription = anime.title,
-                modifier = Modifier
-                    .width(94.dp)
-                    .height(136.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
+        AsyncImage(model = anime.image, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop, alpha = 0.42f)
+        Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xFF0D0D10).copy(alpha = 0.98f)))))
+        Row(modifier = Modifier.align(Alignment.BottomStart).padding(18.dp), verticalAlignment = Alignment.Bottom) {
+            AsyncImage(model = anime.image, contentDescription = anime.title, modifier = Modifier.width(94.dp).height(136.dp).clip(RoundedCornerShape(12.dp)), contentScale = ContentScale.Crop)
             Spacer(Modifier.width(14.dp))
             Column(modifier = Modifier.padding(bottom = 2.dp)) {
                 Text("FEATURED", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
@@ -185,28 +145,15 @@ private fun FeaturedBanner(anime: HomeAnime, onClick: (HomeAnime) -> Unit) {
 }
 
 @Composable
-private fun AnimeSection(
-    title: String,
-    items: List<HomeAnime>,
-    onClick: (HomeAnime) -> Unit,
-    compact: Boolean = false
-) {
+private fun AnimeSection(title: String, items: List<HomeAnime>, onClick: (HomeAnime) -> Unit, compact: Boolean = false) {
     Column {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
             Text("See all", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
         }
         Spacer(Modifier.height(12.dp))
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 18.dp)
-        ) {
-            items(items) { anime ->
-                AnimePoster(anime, onClick, compact)
-            }
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 18.dp)) {
+            items(items) { anime -> AnimePoster(anime, onClick, compact) }
         }
     }
 }
@@ -215,15 +162,7 @@ private fun AnimeSection(
 private fun AnimePoster(anime: HomeAnime, onClick: (HomeAnime) -> Unit, compact: Boolean) {
     val width = if (compact) 118.dp else 132.dp
     Column(modifier = Modifier.width(width).clickable { onClick(anime) }) {
-        AsyncImage(
-            model = anime.image,
-            contentDescription = anime.title,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(if (compact) 166.dp else 188.dp)
-                .clip(RoundedCornerShape(14.dp)),
-            contentScale = ContentScale.Crop
-        )
+        AsyncImage(model = anime.image, contentDescription = anime.title, modifier = Modifier.fillMaxWidth().height(if (compact) 166.dp else 188.dp).clip(RoundedCornerShape(14.dp)), contentScale = ContentScale.Crop)
         Spacer(Modifier.height(7.dp))
         Text(anime.title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
         Text(anime.subtitle, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
