@@ -157,6 +157,12 @@ class HomeFragment : Fragment() {
             }
         }
         binding.homeUserAvatarContainer.setSafeOnClickListener {
+            ContextCompat.startActivity(
+                requireContext(), Intent(requireContext(), ProfileActivity::class.java)
+                    .putExtra("userId", Anilist.userid), null
+            )
+        }
+        binding.homeFilterContainer.setSafeOnClickListener {
             val dialogFragment =
                 SettingsDialogFragment.newInstance(SettingsDialogFragment.Companion.PageType.HOME)
             dialogFragment.show(
