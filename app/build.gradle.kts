@@ -73,10 +73,6 @@ android {
     flavorDimensions += "store"
 
     productFlavors {
-        create("fdroid") {
-            dimension = "store"
-            versionNameSuffix = "-fdroid"
-        }
         create("google") {
             dimension = "store"
             isDefault = true
