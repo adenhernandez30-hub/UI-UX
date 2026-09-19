@@ -5,10 +5,10 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import ani.dantotsu.addons.download.DownloadAddonManager
-import ani.dantotsu.media.AddonType
-import ani.dantotsu.media.MediaType
-import ani.dantotsu.parsers.novel.NovelExtensionManager
+import ani.streamix.addons.download.DownloadAddonManager
+import ani.streamix.media.AddonType
+import ani.streamix.media.MediaType
+import ani.streamix.parsers.novel.NovelExtensionManager
 import eu.kanade.tachiyomi.extension.InstallStep
 import eu.kanade.tachiyomi.extension.anime.AnimeExtensionManager
 import eu.kanade.tachiyomi.extension.manga.MangaExtensionManager

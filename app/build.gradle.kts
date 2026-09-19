@@ -43,7 +43,7 @@ fun computeGitCommitHash(): String {
 val gitCommitHash = computeGitCommitHash()
 
 android {
-    namespace = "ani.dantotsu"
+    namespace = "ani.streamix"
     compileSdk = 37
 
     defaultConfig {

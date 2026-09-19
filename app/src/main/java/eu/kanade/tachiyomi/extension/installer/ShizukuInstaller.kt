@@ -12,17 +12,17 @@ import android.content.pm.PackageInstaller
 import android.content.pm.PackageManager
 import android.os.IBinder
 import androidx.core.content.ContextCompat
-import ani.dantotsu.BuildConfig
-import ani.dantotsu.R
-import ani.dantotsu.toast
-import ani.dantotsu.util.Logger
+import ani.streamix.BuildConfig
+import ani.streamix.R
+import ani.streamix.toast
+import ani.streamix.util.Logger
 import eu.kanade.tachiyomi.extension.InstallStep
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import ani.dantotsu.shizuku.IShellInterface
-import ani.dantotsu.shizuku.ShellInterface
+import ani.streamix.shizuku.IShellInterface
+import ani.streamix.shizuku.ShellInterface
 import rikka.shizuku.Shizuku
 
 class ShizukuInstaller(private val service: Service) : Installer(service) {

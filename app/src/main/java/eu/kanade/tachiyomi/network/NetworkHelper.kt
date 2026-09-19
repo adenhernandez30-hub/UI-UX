@@ -2,10 +2,10 @@ package eu.kanade.tachiyomi.network
 
 import android.content.Context
 import android.os.Build
-import ani.dantotsu.Mapper
-import ani.dantotsu.settings.saving.PrefManager
-import ani.dantotsu.settings.saving.PrefName
-import ani.dantotsu.util.Logger
+import ani.streamix.Mapper
+import ani.streamix.settings.saving.PrefManager
+import ani.streamix.settings.saving.PrefName
+import ani.streamix.util.Logger
 import com.lagradost.nicehttp.Requests
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject

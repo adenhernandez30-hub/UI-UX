@@ -5,12 +5,12 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
-import ani.dantotsu.connections.crashlytics.CrashlyticsInterface
-import ani.dantotsu.media.MediaType
-import ani.dantotsu.parsers.NovelInterface
-import ani.dantotsu.parsers.novel.NovelExtension
-import ani.dantotsu.parsers.novel.NovelLoadResult
-import ani.dantotsu.util.Logger
+import ani.streamix.connections.crashlytics.CrashlyticsInterface
+import ani.streamix.media.MediaType
+import ani.streamix.parsers.NovelInterface
+import ani.streamix.parsers.novel.NovelExtension
+import ani.streamix.parsers.novel.NovelLoadResult
+import ani.streamix.util.Logger
 import dalvik.system.PathClassLoader
 import eu.kanade.domain.source.service.SourcePreferences
 import eu.kanade.tachiyomi.animesource.AnimeCatalogueSource
@@ -32,8 +32,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import ani.dantotsu.core.metro.GraphProvider
-import ani.dantotsu.di.AppGraph
+import ani.streamix.core.metro.GraphProvider
+import ani.streamix.di.AppGraph
 import java.util.Locale
 import java.io.File
 

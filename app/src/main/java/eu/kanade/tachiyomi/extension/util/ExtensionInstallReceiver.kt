@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
-import ani.dantotsu.media.MediaType
-import ani.dantotsu.parsers.novel.NovelExtension
-import ani.dantotsu.parsers.novel.NovelLoadResult
-import ani.dantotsu.util.Logger
+import ani.streamix.media.MediaType
+import ani.streamix.parsers.novel.NovelExtension
+import ani.streamix.parsers.novel.NovelLoadResult
+import ani.streamix.util.Logger
 import eu.kanade.tachiyomi.extension.anime.model.AnimeExtension
 import eu.kanade.tachiyomi.extension.anime.model.AnimeLoadResult
 import eu.kanade.tachiyomi.extension.manga.model.MangaExtension
@@ -20,7 +20,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import tachiyomi.core.util.lang.launchNow
 import androidx.core.net.toUri
-import ani.dantotsu.BuildConfig
+import ani.streamix.BuildConfig
 
 /**
  * Broadcast receiver that listens for the system's packages installed, updated or removed, and only

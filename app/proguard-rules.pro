@@ -58,8 +58,8 @@
 # Core App / Extensions
 #############################################
 
--keep class ani.dantotsu.** { *; }
--keep class ani.dantotsu.download.DownloadsManager { *; }
+-keep class ani.streamix.** { *; }
+-keep class ani.streamix.download.DownloadsManager { *; }
 
 -keep class eu.kanade.** { *; }
 -keep class uy.kohesive.injekt.** { *; }
