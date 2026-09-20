@@ -15,7 +15,7 @@ import com.xwray.groupie.viewbinding.GroupieViewHolder
 class ChartItem(
     private val title: String,
     private val aaOptions: AAOptions,
-    private val activity: ProfileActivity
+    private val context: android.content.Context
 ) : BindableItem<ItemChartBinding>() {
     private lateinit var binding: ItemChartBinding
     override fun bind(viewBinding: ItemChartBinding, position: Int) {
