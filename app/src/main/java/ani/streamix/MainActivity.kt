@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.drawable.Animatable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
@@ -38,7 +37,6 @@ import ani.streamix.connections.anilist.Anilist
 import ani.streamix.connections.anilist.AnilistHomeViewModel
 import ani.streamix.databinding.ActivityMainBinding
 import ani.streamix.databinding.DialogUserAgentBinding
-import ani.streamix.databinding.SplashScreenBinding
 import ani.streamix.home.AnimeFragment
 import ani.streamix.home.HomeFragment
 import ani.streamix.home.LoginFragment
@@ -70,7 +68,6 @@ import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.joery.animatedbottombar.AnimatedBottomBar
@@ -252,28 +249,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.root.isMotionEventSplittingEnabled = false
-
-        lifecycleScope.launch {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                val splash = SplashScreenBinding.inflate(layoutInflater)
-                binding.root.addView(splash.root)
-                (splash.splashImage.drawable as Animatable).start()
-
-                delay(200)
-
-                ObjectAnimator.ofFloat(
-                    splash.root,
-                    View.TRANSLATION_Y,
-                    0f,
-                    -splash.root.height.toFloat()
-                ).apply {
-                    interpolator = AnticipateInterpolator()
-                    duration = 200L
-                    doOnEnd { binding.root.removeView(splash.root) }
-                    start()
-                }
-            }
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             splashScreen.setOnExitAnimationListener { splashScreenView ->
