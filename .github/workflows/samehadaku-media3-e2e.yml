@@ -1,13 +1,12 @@
 name: Samehadaku Media3 Android E2E
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
   push:
     branches: [main]
 
 jobs:
   e2e:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'ci: run Samehadaku Media3 Android E2E' }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
 
