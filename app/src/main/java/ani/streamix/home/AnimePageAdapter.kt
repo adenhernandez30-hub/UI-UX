@@ -68,6 +68,7 @@ class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHold
         }
 
         updateAvatar()
+        trendingBinding.userAvatar.setImageResource(R.drawable.ic_round_filter_alt_24)
 
         trendingBinding.searchBar.hint = binding.root.context.getString(R.string.search)
         trendingBinding.searchBarText.setOnClickListener {
