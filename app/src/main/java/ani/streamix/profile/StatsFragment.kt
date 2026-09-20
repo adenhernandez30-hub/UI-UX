@@ -36,7 +36,6 @@ class StatsFragment :
     private var type: MediaType = MediaType.ANIME
     private var statType: StatType = StatType.COUNT
     private lateinit var user: Query.UserProfile
-    private val activity: ProfileActivity get() = requireActivity() as ProfileActivity
     private var loadedFirstTime = false
 
     override fun onCreateView(
@@ -59,7 +58,7 @@ class StatsFragment :
 
         user = arguments?.getSerializableCompat<Query.UserProfile>("user") as Query.UserProfile
 
-        binding.statisticList.setBaseline(activity.binding.profileNavBarContainer!!)
+        binding.statisticList.setBaseline(requireActivity().findViewById(R.id.navbar_container))
 
         binding.statisticList.adapter = adapter
         binding.statisticList.recycledViewPool.setMaxRecycledViews(0, 0)
@@ -222,7 +221,7 @@ class StatsFragment :
         if (chartPackets.isNotEmpty()) {
             standardizeChartPackets(chartPackets)
             val formatChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.OneDimensional,
                 AAChartType.Pie,
                 statType,
@@ -230,7 +229,7 @@ class StatsFragment :
                 chartPackets,
                 xAxisName = "Format",
             )
-            adapter.add(ChartItem("Format", formatChart, activity))
+            adapter.add(ChartItem("Format", formatChart, requireContext()))
         }
     }
 
@@ -262,7 +261,7 @@ class StatsFragment :
         if (chartPackets.isNotEmpty()) {
             standardizeChartPackets(chartPackets)
             val statusChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.OneDimensional,
                 AAChartType.Funnel,
                 statType,
@@ -270,7 +269,7 @@ class StatsFragment :
                 chartPackets,
                 xAxisName = "Status",
             )
-            adapter.add(ChartItem("Status", statusChart, activity))
+            adapter.add(ChartItem("Status", statusChart, requireContext()))
         }
     }
 
@@ -312,7 +311,7 @@ class StatsFragment :
         if (chartPackets.isNotEmpty()) {
             standardizeChartPackets(chartPackets)
             val scoreChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.TwoDimensional,
                 AAChartType.Column,
                 statType,
@@ -320,7 +319,7 @@ class StatsFragment :
                 chartPackets,
                 xAxisName = "Score",
             )
-            adapter.add(ChartItem("Score", scoreChart, activity))
+            adapter.add(ChartItem("Score", scoreChart, requireContext()))
         }
     }
 
@@ -354,7 +353,7 @@ class StatsFragment :
         if (chartPackets.isNotEmpty()) {
             standardizeChartPackets(chartPackets)
             val lengthChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.OneDimensional,
                 AAChartType.Pyramid,
                 statType,
@@ -362,7 +361,7 @@ class StatsFragment :
                 chartPackets,
                 xAxisName = "Length",
             )
-            adapter.add(ChartItem("Length", lengthChart, activity))
+            adapter.add(ChartItem("Length", lengthChart, requireContext()))
         }
     }
 
@@ -396,7 +395,7 @@ class StatsFragment :
         if (chartPackets.isNotEmpty()) {
             standardizeChartPackets(chartPackets)
             val releaseYearChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.TwoDimensional,
                 AAChartType.Bubble,
                 statType,
@@ -405,7 +404,7 @@ class StatsFragment :
                 xAxisName = "Year",
                 scrollPos = 0.0f
             )
-            adapter.add(ChartItem("Release Year", releaseYearChart, activity))
+            adapter.add(ChartItem("Release Year", releaseYearChart, requireContext()))
         }
     }
 
@@ -437,7 +436,7 @@ class StatsFragment :
         if (chartPackets.isNotEmpty()) {
             standardizeChartPackets(chartPackets)
             val startYearChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.TwoDimensional,
                 AAChartType.Bar,
                 statType,
@@ -445,7 +444,7 @@ class StatsFragment :
                 chartPackets,
                 xAxisName = "Year",
             )
-            adapter.add(ChartItem("Start Year", startYearChart, activity))
+            adapter.add(ChartItem("Start Year", startYearChart, requireContext()))
         }
     }
 
@@ -489,7 +488,7 @@ class StatsFragment :
             chartPackets.addAll(standardizedPackets)
             @Suppress("UNCHECKED_CAST")
             val genreChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.TwoDimensional,
                 AAChartType.Areaspline,
                 statType,
@@ -500,7 +499,7 @@ class StatsFragment :
                 passedCategories = chartPackets[0].names as List<String>,
                 normalize = true
             )
-            adapter.add(ChartItem("Genre", genreChart, activity))
+            adapter.add(ChartItem("Genre", genreChart, requireContext()))
         }
     }
 
@@ -544,7 +543,7 @@ class StatsFragment :
             chartPackets.addAll(standardizedPackets)
             @Suppress("UNCHECKED_CAST")
             val tagChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.TwoDimensional,
                 AAChartType.Areaspline,
                 statType,
@@ -555,7 +554,7 @@ class StatsFragment :
                 passedCategories = chartPackets[0].names as List<String>,
                 scrollPos = 0.0f
             )
-            adapter.add(ChartItem("Tag", tagChart, activity))
+            adapter.add(ChartItem("Tag", tagChart, requireContext()))
         }
     }
 
@@ -599,7 +598,7 @@ class StatsFragment :
             chartPackets.addAll(standardizedPackets)
             @Suppress("UNCHECKED_CAST")
             val countryChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.OneDimensional,
                 AAChartType.Pie,
                 statType,
@@ -610,7 +609,7 @@ class StatsFragment :
                 passedCategories = chartPackets[0].names as List<String>,
                 scrollPos = null
             )
-            adapter.add(ChartItem("Country", countryChart, activity))
+            adapter.add(ChartItem("Country", countryChart, requireContext()))
         }
     }
 
@@ -656,7 +655,7 @@ class StatsFragment :
             chartPackets.addAll(standardizedPackets)
             @Suppress("UNCHECKED_CAST")
             val voiceActorsChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.TwoDimensional,
                 AAChartType.Column,
                 statType,
@@ -667,7 +666,7 @@ class StatsFragment :
                 passedCategories = chartPackets[0].names as List<String>,
                 scrollPos = 0.0f
             )
-            adapter.add(ChartItem("Voice Actor", voiceActorsChart, activity))
+            adapter.add(ChartItem("Voice Actor", voiceActorsChart, requireContext()))
         }
     }
 
@@ -711,7 +710,7 @@ class StatsFragment :
             chartPackets.addAll(standardizedPackets)
             @Suppress("UNCHECKED_CAST")
             val studioChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.TwoDimensional,
                 AAChartType.Spline,
                 statType,
@@ -723,7 +722,7 @@ class StatsFragment :
                 scrollPos = null,
                 normalize = true
             )
-            adapter.add(ChartItem("Studio", studioChart, activity))
+            adapter.add(ChartItem("Studio", studioChart, requireContext()))
         }
     }
 
@@ -769,7 +768,7 @@ class StatsFragment :
             chartPackets.addAll(standardizedPackets)
             @Suppress("UNCHECKED_CAST")
             val staffChart = ChartBuilder.buildChart(
-                activity,
+                requireContext(),
                 ChartType.TwoDimensional,
                 AAChartType.Line,
                 statType,
@@ -780,7 +779,7 @@ class StatsFragment :
                 passedCategories = chartPackets[0].names as List<String>,
                 scrollPos = 0.0f
             )
-            adapter.add(ChartItem("Staff", staffChart, activity))
+            adapter.add(ChartItem("Staff", staffChart, requireContext()))
         }
     }
 
