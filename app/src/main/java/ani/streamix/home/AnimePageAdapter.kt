@@ -297,21 +297,13 @@ class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHold
     }
 
     fun updateAvatar() {
-        val rescueMode: Boolean = PrefManager.getVal(PrefName.RescueMode)
-        val avatarUrl = if (rescueMode) MAL.avatar else Anilist.avatar
-        if (avatarUrl != null && ready.value == true) {
-            trendingBinding.userAvatar.loadImage(avatarUrl)
-            trendingBinding.userAvatar.imageTintList = null
-        }
+        // The home action is now the Anime filter button; keep the method for
+        // existing lifecycle callers without changing their call sites.
     }
 
     fun updateNotificationCount() {
-        if (this::binding.isInitialized) {
-            val isRescueMode: Boolean = PrefManager.getVal(PrefName.RescueMode)
-            trendingBinding.notificationCount.isVisible = !isRescueMode && Anilist.unreadNotificationCount > 0
-                    && PrefManager.getVal<Boolean>(PrefName.ShowNotificationRedDot) == true
-            trendingBinding.notificationCount.text = Anilist.unreadNotificationCount.toString()
-        }
+        // Notification/avatar behavior is intentionally removed from the Anime
+        // home action button; it is now the filter button.
     }
 
     inner class AnimePageViewHolder(val binding: ItemAnimePageBinding) :
