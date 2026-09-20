@@ -8,7 +8,6 @@ workflows:
       java: 17
       groups:
         - emulatorwtf
-        - github_credentials
 
     scripts:
       - name: Set Android SDK location
