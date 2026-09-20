@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.fragment.app.commit\nimport androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import ani.streamix.R
 import ani.streamix.connections.anilist.Anilist
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProfileHostFragment : Fragment() {
-    private var container: FrameLayout? = null
+    private var container: FrameLayout? = null\n    private var lastUserId: Int? = null
 
     override fun onCreateView(
         inflater: android.view.LayoutInflater,
