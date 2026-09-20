@@ -206,7 +206,7 @@ class ProfileFragment : Fragment() {
             if (it != null) {
                 if (it.isNotEmpty()) {
                     val isOther = user.id != Anilist.userid
-                    recyclerView.adapter = MediaAdaptor(0, it, requireContext(), fav = true, isOtherUser = isOther)
+                    recyclerView.adapter = MediaAdaptor(0, it, requireActivity(), fav = true, isOtherUser = isOther)
                     recyclerView.layoutManager = LinearLayoutManager(
                         requireContext(), LinearLayoutManager.HORIZONTAL,
                         false
