@@ -57,6 +57,12 @@ class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHold
         trendingBinding = LayoutTrendingBinding.bind(binding.root)
         trendingViewPager = trendingBinding.trendingViewPager
 
+        // Let the Featured background visually extend behind the Anime profile header.
+        // This is applied only to Anime so the shared trending layout used by Manga is untouched.
+        binding.root.clipChildren = false
+        trendingBinding.trendingContainer.clipChildren = false
+        trendingBinding.trendingViewPager.translationY = (-84f).px
+
         val textInputLayout = holder.itemView.findViewById<TextInputLayout>(R.id.searchBar)
         val color = binding.root.context.getThemeColor(android.R.attr.windowBackground)
         textInputLayout.boxBackgroundColor = (color and 0x00FFFFFF) or 0x28000000
@@ -192,8 +198,6 @@ class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHold
                 getAppString(R.string.updated),
                 media
             )
-            animePopular.visibility = View.VISIBLE
-            animePopular.startAnimation(setSlideUp())
             if (adaptor.itemCount == 0) {
                 animeRecentlyContainer.visibility = View.GONE
             }
