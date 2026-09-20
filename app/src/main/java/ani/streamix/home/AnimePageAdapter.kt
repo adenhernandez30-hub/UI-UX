@@ -36,7 +36,6 @@ import ani.streamix.setSlideUp
 import ani.streamix.settings.saving.PrefManager
 import ani.streamix.settings.saving.PrefName
 import ani.streamix.statusBarHeight
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputLayout
 
 class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHolder>() {
@@ -59,15 +58,8 @@ class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHold
         trendingViewPager = trendingBinding.trendingViewPager
 
         val textInputLayout = holder.itemView.findViewById<TextInputLayout>(R.id.searchBar)
-        val currentColor = textInputLayout.boxBackgroundColor
-        val semiTransparentColor = (currentColor and 0x00FFFFFF) or 0xA8000000.toInt()
-        textInputLayout.boxBackgroundColor = semiTransparentColor
-        val materialCardView =
-            holder.itemView.findViewById<MaterialCardView>(R.id.userAvatarContainer)
-        materialCardView.setCardBackgroundColor(semiTransparentColor)
         val color = binding.root.context.getThemeColor(android.R.attr.windowBackground)
         textInputLayout.boxBackgroundColor = (color and 0x00FFFFFF) or 0x28000000
-        materialCardView.setCardBackgroundColor((color and 0x00FFFFFF) or 0x28000000)
 
         trendingBinding.titleContainer.updatePadding(top = statusBarHeight)
 
@@ -108,7 +100,6 @@ class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHold
             trendingBinding.searchBar.performClick()
         }
 
-        trendingBinding.notificationCount.isVisible = false
         listOf(
             binding.animePreviousSeason,
             binding.animeThisSeason,
@@ -168,8 +159,6 @@ class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHold
         trendingBinding.trendingViewPager.layoutAnimation =
             LayoutAnimationController(setSlideIn(), 0.25f)
         trendingBinding.titleContainer.startAnimation(setSlideUp())
-        binding.animeListContainer.layoutAnimation =
-            LayoutAnimationController(setSlideIn(), 0.25f)
         binding.animeSeasonsCont.layoutAnimation =
             LayoutAnimationController(setSlideIn(), 0.25f)
     }
