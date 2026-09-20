@@ -40,8 +40,8 @@ class SamehadakuMedia3E2ETest {
 
         val episodeCandidates = provider.loadLinks(episodeUrl)
         assertFalse(
-            episodeCandidates.isEmpty(),
             "Samehadaku returned no episode-page candidates",
+            episodeCandidates.isEmpty(),
         )
 
         val verified = stack.verifiedPipeline.resolve(
@@ -51,16 +51,16 @@ class SamehadakuMedia3E2ETest {
         )
 
         assertTrue(
+            "Samehadaku returned no verified stream candidates: $verified",
             verified is AniLabVerifiedPipelineResult.Candidates &&
                 verified.candidates.isNotEmpty(),
-            "Samehadaku returned no verified stream candidates: $verified",
         )
 
         val result = verified as AniLabVerifiedPipelineResult.Candidates
         val selected = result.candidates.firstOrNull()
-        assertNotNull(selected, "No verified candidate selected")
+        assertNotNull("No verified candidate selected", selected)
 
-        Media3E2EActivity.candidate = selected!!.candidate
+        Media3E2EActivity.candidate = selected ?: error("No verified candidate selected")
         scenario = ActivityScenario.launch(Media3E2EActivity::class.java)
 
         val rendered = Media3E2EActivity.firstFrameLatch.await(90, TimeUnit.SECONDS)
