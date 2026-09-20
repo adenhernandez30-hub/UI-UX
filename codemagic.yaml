@@ -1,7 +1,7 @@
 workflows:
   samehadaku-media3-e2e:
     name: Samehadaku Provider -> Media3 E2E
-    instance_type: linux_x2
+    instance_type: mac_mini_m2
     max_build_duration: 60
 
     environment:
