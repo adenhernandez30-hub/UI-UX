@@ -25,6 +25,7 @@ import ani.streamix.bottomBarOrNull
 import ani.streamix.connections.anilist.AniMangaSearchResults
 import ani.streamix.connections.anilist.Anilist
 import ani.streamix.connections.anilist.AnilistAnimeViewModel
+import ani.streamix.connections.anilist.AnilistHomeViewModel
 import ani.streamix.connections.anilist.getUserId
 import ani.streamix.databinding.FragmentAnimeBinding
 import ani.streamix.media.CarouselLogoResolver
@@ -52,6 +53,7 @@ class AnimeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var animePageAdapter: AnimePageAdapter
 
+    private val homeModel: AnilistHomeViewModel by activityViewModels()
     val model: AnilistAnimeViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -209,6 +211,20 @@ class AnimeFragment : Fragment() {
         })
         animePageAdapter.ready.observe(viewLifecycleOwner) { i ->
             if (i) {
+                homeModel.getAnimeContinue().observe(viewLifecycleOwner) {
+                    if (it != null) {
+                        animePageAdapter.updateContinue(
+                            MediaAdaptor(0, it, requireActivity()),
+                            it
+                        )
+                    }
+                }
+                if (homeModel.getAnimeContinue().value == null) {
+                    scope.launch(Dispatchers.IO) {
+                        homeModel.initHomePage()
+                    }
+                }
+
                 model.getUpdated().observe(viewLifecycleOwner) {
                     if (it != null) {
                         animePageAdapter.updateRecent(MediaAdaptor(0, it, requireActivity()), it)
