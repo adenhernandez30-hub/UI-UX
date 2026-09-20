@@ -41,8 +41,8 @@ class ChartItem(
         binding.chartView.aa_drawChartWithChartOptions(aaOptions)
         binding.openButton.setOnClickListener {
             SingleStatActivity.chartOptions = aaOptions
-            activity.startActivity(
-                Intent(activity, SingleStatActivity::class.java)
+            context.startActivity(
+                Intent(context, SingleStatActivity::class.java)
             )
         }
     }
