@@ -32,7 +32,7 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
         with:
-          packages: 'platform-tools emulator platforms;android-37 build-tools;36.0.0'
+          packages: 'platform-tools emulator platforms;android-36 build-tools;36.0.0'
           accept-android-sdk-licenses: true
 
       - name: Prepare test-only Provider + Media3 harness
@@ -48,6 +48,7 @@ jobs:
 
           p = Path("app/build.gradle.kts")
           s = p.read_text()
+          s = s.replace("compileSdk = 37", "compileSdk = 36", 1)
 
           runner = 'testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"'
           if runner not in s:
