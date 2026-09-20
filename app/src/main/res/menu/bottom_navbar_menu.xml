@@ -6,12 +6,22 @@
         android:title="@string/anime" />
 
     <item
-        android:id="@+id/home"
-        android:icon="@drawable/ic_round_home_24"
-        android:title="@string/home" />
+        android:id="@+id/calendar"
+        android:icon="@drawable/ic_round_calendar_today_24"
+        android:title="@string/calendar" />
 
     <item
-        android:id="@+id/manga"
-        android:icon="@drawable/ic_round_import_contacts_24"
-        android:title="@string/manga" />
+        android:id="@+id/social"
+        android:icon="@drawable/ic_round_comment_24"
+        android:title="@string/social" />
+
+    <item
+        android:id="@+id/library"
+        android:icon="@drawable/ic_round_library_books_24"
+        android:title="@string/library" />
+
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_round_person_24"
+        android:title="@string/profile" />
 </menu>

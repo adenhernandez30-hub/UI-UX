@@ -1017,6 +1017,9 @@ Non quae tempore quo provident laudantium qui illo dolor vel quia dolor et exerc
     <string name="media">Media</string>
     <string name="users">Users</string>
     <string name="social">Social</string>
+    <string name="profile">Profile</string>
+    <string name="library">Library</string>
+    <string name="calendar">Calendar</string>
     <string name="auto_skip_recap">Auto Skip Recap</string>
     <string name="use_anilist_icon">Use AniList Icon</string>
     <string name="audio_tracks">Audio Tracks</string>
