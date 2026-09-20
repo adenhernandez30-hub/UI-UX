@@ -1,23 +1,24 @@
 package ani.streamix.media
 
+import androidx.core.content.ContextCompat
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewLifecycleOwner
 import ani.streamix.R
 import ani.streamix.Refresh
-import ani.streamix.StatusBarHeight
 import ani.streamix.databinding.ActivityListBinding
 import ani.streamix.getThemeColor
-import ani.streamix.hideSystemBars
 import ani.streamix.media.user.ListViewPagerAdapter
 import ani.streamix.settings.saving.PrefManager
 import ani.streamix.settings.saving.PrefName
+import ani.streamix.statusBarHeight
 import ani.streamix.themes.ThemeManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -41,7 +42,7 @@ class CalendarFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        ThemeManager(requireContext()).applyTheme()
+        ThemeManager(requireActivity()).applyTheme()
         _binding = ActivityListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -70,13 +71,13 @@ class CalendarFragment : Fragment() {
 
         if (!PrefManager.getVal<Boolean>(PrefName.ImmersiveMode)) {
             requireActivity().window.statusBarColor =
-                requireContext().getThemeColor(ani.streamix.R.attr.color_nav_bg_inv)
+                ContextCompat.getColor(requireContext(), R.color.nav_bg_inv)
             binding.root.fitsSystemWindows = true
         } else {
             binding.root.fitsSystemWindows = false
-            requireActivity().hideSystemBars()
+            requireActivity().hideSystemBarsExtendView()
             binding.settingsContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin = StatusBarHeight
+                topMargin = statusBarHeight
             }
         }
 
