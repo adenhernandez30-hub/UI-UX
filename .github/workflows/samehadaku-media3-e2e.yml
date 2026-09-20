@@ -1,0 +1,332 @@
+name: Samehadaku Media3 Android E2E
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  e2e:
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'ci: run Samehadaku Media3 Android E2E'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout UI/UX
+        uses: actions/checkout@v4
+        with:
+          ref: foundation/dantotsu-anilab
+
+      - name: Checkout Provider v2
+        uses: actions/checkout@v4
+        with:
+          repository: adenhernandez30-hub/Provider
+          ref: rewrite/provider-v2
+          path: Provider
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses || true
+
+      - name: Prepare test-only Provider + Media3 harness
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p app/src/androidTest/java/com/kakaanime/providerv2
+          cp -R Provider/provider-v2/src/main/java/com/kakaanime/providerv2/. app/src/androidTest/java/com/kakaanime/providerv2/
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path("app/build.gradle.kts")
+          s = p.read_text()
+
+          runner = 'testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"'
+          if runner not in s:
+              s = s.replace(
+                  'minSdk = 26',
+                  'minSdk = 26\n        ' + runner,
+                  1,
+              )
+
+          test_deps = '''
+          dependencies {
+              androidTestImplementation("androidx.test:core:1.7.0")
+              androidTestImplementation("androidx.test:runner:1.7.0")
+              androidTestImplementation("androidx.test:rules:1.7.0")
+              androidTestImplementation("androidx.test.ext:junit:1.3.0")
+          }
+          '''
+          if 'androidx.test:runner:1.7.0' not in s:
+              s += "\n" + test_deps
+
+          p.write_text(s)
+          PY
+
+          mkdir -p app/src/androidTest/java/ani/streamix
+          cat > app/src/androidTest/java/ani/streamix/Media3E2EActivity.kt <<'KOTLIN'
+          package ani.streamix
+
+          import android.app.Activity
+          import android.os.Bundle
+          import android.view.ViewGroup
+          import android.widget.FrameLayout
+          import androidx.media3.common.MediaItem
+          import androidx.media3.common.MimeTypes
+          import androidx.media3.common.PlaybackException
+          import androidx.media3.common.util.UnstableApi
+          import androidx.media3.datasource.DefaultHttpDataSource
+          import androidx.media3.exoplayer.ExoPlayer
+          import androidx.media3.exoplayer.analytics.AnalyticsListener
+          import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+          import androidx.media3.ui.PlayerView
+          import com.kakaanime.providerv2.AniLabStreamCandidate
+          import java.util.concurrent.CountDownLatch
+
+          @OptIn(UnstableApi::class)
+          class Media3E2EActivity : Activity() {
+              private var player: ExoPlayer? = null
+
+              companion object {
+                  @Volatile
+                  var candidate: AniLabStreamCandidate? = null
+
+                  @Volatile
+                  var firstFrameLatch = CountDownLatch(1)
+
+                  @Volatile
+                  var playbackError: PlaybackException? = null
+              }
+
+              override fun onCreate(savedInstanceState: Bundle?) {
+                  super.onCreate(savedInstanceState)
+
+                  firstFrameLatch = CountDownLatch(1)
+
+                  val root = FrameLayout(this)
+                  val playerView = PlayerView(this).apply {
+                      useController = true
+                      keepScreenOn = true
+                  }
+                  root.addView(
+                      playerView,
+                      ViewGroup.LayoutParams(
+                          ViewGroup.LayoutParams.MATCH_PARENT,
+                          ViewGroup.LayoutParams.MATCH_PARENT,
+                      ),
+                  )
+                  setContentView(root)
+
+                  val c = candidate ?: error("Provider candidate was not supplied")
+
+                  val headers = linkedMapOf<String, String>()
+                  headers.putAll(c.headers)
+                  if (c.referer.isNotBlank()) {
+                      headers["Referer"] = c.referer
+                  }
+                  if (c.cookies.isNotBlank()) {
+                      headers["Cookie"] = c.cookies
+                  }
+
+                  val dataSource = DefaultHttpDataSource.Factory()
+                      .setAllowCrossProtocolRedirects(true)
+                      .setDefaultRequestProperties(headers)
+
+                  val mediaSourceFactory = DefaultMediaSourceFactory(dataSource)
+
+                  val mediaItem = MediaItem.Builder()
+                      .setUri(c.url)
+                      .apply {
+                          when (c.type) {
+                              com.kakaanime.providerv2.AniLabStreamType.HLS ->
+                                  setMimeType(MimeTypes.APPLICATION_M3U8)
+                              com.kakaanime.providerv2.AniLabStreamType.DASH ->
+                                  setMimeType(MimeTypes.APPLICATION_MPD)
+                              else -> Unit
+                          }
+                      }
+                      .build()
+
+                  val exo = ExoPlayer.Builder(this)
+                      .setMediaSourceFactory(mediaSourceFactory)
+                      .build()
+
+                  player = exo
+                  playerView.player = exo
+
+                  exo.addAnalyticsListener(object : AnalyticsListener {
+                      override fun onRenderedFirstFrame(
+                          eventTime: AnalyticsListener.EventTime,
+                          output: Any,
+                          renderTimeMs: Long,
+                      ) {
+                          android.util.Log.i(
+                              "SamehadakuMedia3E2E",
+                              "FIRST_FRAME rendered; type=${c.type}; quality=${c.quality}",
+                          )
+                          firstFrameLatch.countDown()
+                      }
+                  })
+
+                  exo.addListener(object : androidx.media3.common.Player.Listener {
+                      override fun onPlayerError(error: PlaybackException) {
+                          playbackError = error
+                          android.util.Log.e(
+                              "SamehadakuMedia3E2E",
+                              "PLAYER_ERROR: ${error.errorCodeName}: ${error.message}",
+                              error,
+                          )
+                      }
+                  })
+
+                  android.util.Log.i(
+                      "SamehadakuMedia3E2E",
+                      "MEDIA3_START type=${c.type}; quality=${c.quality}; provider=${c.providerId}; extractor=${c.extractorId}",
+                  )
+
+                  exo.setMediaItem(mediaItem)
+                  exo.prepare()
+                  exo.play()
+              }
+
+              override fun onDestroy() {
+                  player?.release()
+                  player = null
+                  super.onDestroy()
+              }
+          }
+          KOTLIN
+
+          cat > app/src/androidTest/java/ani/streamix/SamehadakuMedia3E2ETest.kt <<'KOTLIN'
+          package ani.streamix
+
+          import androidx.test.core.app.ActivityScenario
+          import androidx.test.ext.junit.runners.AndroidJUnit4
+          import com.kakaanime.providerv2.AniLabExtractionContext
+          import com.kakaanime.providerv2.AniLabProviderFactory
+          import com.kakaanime.providerv2.AniLabVerifiedPipelineResult
+          import kotlinx.coroutines.runBlocking
+          import org.junit.After
+          import org.junit.Assert.assertFalse
+          import org.junit.Assert.assertNotNull
+          import org.junit.Assert.assertTrue
+          import org.junit.Before
+          import org.junit.Test
+          import org.junit.runner.RunWith
+          import java.util.concurrent.TimeUnit
+
+          @RunWith(AndroidJUnit4::class)
+          class SamehadakuMedia3E2ETest {
+              private var scenario: ActivityScenario<Media3E2EActivity>? = null
+
+              @Before
+              fun reset() {
+                  Media3E2EActivity.playbackError = null
+                  Media3E2EActivity.candidate = null
+              }
+
+              @After
+              fun cleanup() {
+                  scenario?.close()
+                  scenario = null
+              }
+
+              @Test
+              fun samehadaku_provider_to_media3_first_frame() = runBlocking {
+                  val episodeUrl =
+                      "https://v2.samehadaku.how/one-piece-episode-1178/"
+
+                  val stack = AniLabProviderFactory.samehadaku()
+                  val provider = stack.providers.single { it.id == "samehadaku" }
+
+                  val episodeCandidates = provider.loadLinks(episodeUrl)
+                  assertFalse(
+                      episodeCandidates.isEmpty(),
+                      "Samehadaku returned no episode-page candidates",
+                  )
+
+                  val verified = stack.verifiedPipeline.resolve(
+                      providerId = provider.id,
+                      candidates = episodeCandidates,
+                      context = AniLabExtractionContext(referer = episodeUrl),
+                  )
+
+                  assertTrue(
+                      verified is AniLabVerifiedPipelineResult.Candidates &&
+                          verified.candidates.isNotEmpty(),
+                      "Samehadaku returned no verified stream candidates: ${verified}",
+                  )
+
+                  val result = verified as AniLabVerifiedPipelineResult.Candidates
+                  val selected = result.candidates.firstOrNull()
+                  assertNotNull(selected, "No verified candidate selected")
+
+                  Media3E2EActivity.candidate = selected!!.candidate
+                  scenario = ActivityScenario.launch(Media3E2EActivity::class.java)
+
+                  val rendered = Media3E2EActivity.firstFrameLatch.await(
+                      90,
+                      TimeUnit.SECONDS,
+                  )
+
+                  val error = Media3E2EActivity.playbackError
+                  assertTrue(
+                      "Media3 did not render first frame within 90s. error=${error}",
+                      rendered,
+                  )
+              }
+          }
+          KOTLIN
+
+          sed -i 's/$/$/g' app/src/androidTest/java/ani/streamix/Media3E2EActivity.kt
+          sed -i 's/$/$/g' app/src/androidTest/java/ani/streamix/SamehadakuMedia3E2ETest.kt
+
+          cat > app/src/androidTest/AndroidManifest.xml <<'XML'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <application>
+                  <activity
+                      android:name="ani.streamix.Media3E2EActivity"
+                      android:exported="false" />
+              </application>
+          </manifest>
+          XML
+
+          echo "Prepared Samehadaku -> Provider v2 -> Media3 instrumentation harness."
+
+      - name: Run Android E2E on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_7
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: |
+            ./gradlew :app:connectedGoogleDebugAndroidTest --tests '*SamehadakuMedia3E2ETest' --stacktrace --no-daemon
+
+      - name: Capture Media3 evidence
+        if: always()
+        run: |
+          adb logcat -d -s SamehadakuMedia3E2E:V ExoPlayerImpl:V EventLogger:V '*:S' > samehadaku-media3-log.txt || true
+          adb exec-out screencap -p > samehadaku-media3-screen.png || true
+
+      - name: Upload Media3 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: samehadaku-media3-e2e-evidence
+          path: |
+            samehadaku-media3-log.txt
+            samehadaku-media3-screen.png
+          if-no-files-found: warn
