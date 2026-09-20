@@ -295,7 +295,7 @@ class MainActivity : AppCompatActivity() {
                     else -> 0
                 }
             } else {
-                when (PrefManager.getVal(PrefName.DefaultStartUpTab)) {
+                when (PrefManager.getVal<Int>(PrefName.DefaultStartUpTab)) {
                     0 -> 0
                     1 -> 2
                     else -> 0
