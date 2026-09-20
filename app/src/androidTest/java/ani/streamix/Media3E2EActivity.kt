@@ -44,8 +44,8 @@ class Media3E2EActivity : Activity() {
         val c = candidate ?: error("Provider candidate was not supplied")
         val headers = linkedMapOf<String, String>().apply {
             putAll(c.headers)
-            if (c.referer.isNotBlank()) this["Referer"] = c.referer
-            if (c.cookies.isNotBlank()) this["Cookie"] = c.cookies
+            c.referer?.takeIf { it.isNotBlank() }?.let { this["Referer"] = it }
+            if (c.cookies.isNotEmpty()) { this["Cookie"] = c.cookies.entries.joinToString("; ") { (name, value) -> "$name=$value" } }
         }
 
         val dataSource = DefaultHttpDataSource.Factory()
