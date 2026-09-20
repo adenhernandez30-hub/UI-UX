@@ -15,6 +15,7 @@ import ani.streamix.R
 import ani.streamix.Refresh
 import ani.streamix.databinding.ActivityListBinding
 import ani.streamix.getThemeColor
+import ani.streamix.hideSystemBarsExtendView
 import ani.streamix.media.user.ListViewPagerAdapter
 import ani.streamix.settings.saving.PrefManager
 import ani.streamix.settings.saving.PrefName
