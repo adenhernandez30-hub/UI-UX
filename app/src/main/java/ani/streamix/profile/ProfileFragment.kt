@@ -40,7 +40,6 @@ import kotlinx.coroutines.launch
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     val binding get() = _binding!!
-    private val activity: ProfileActivity get() = requireActivity() as ProfileActivity
     private lateinit var user: Query.UserProfile
     private val favStaff = arrayListOf<Author>()
     private val favCharacter = arrayListOf<Character>()
@@ -74,7 +73,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.root.setBaseline(activity.binding.profileNavBarContainer)
+        binding.root.setBaseline(requireActivity().findViewById(R.id.navbar_container))
 
         user = arguments?.getSerializableCompat<Query.UserProfile>("user") as Query.UserProfile
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
@@ -85,7 +84,7 @@ class ProfileFragment : Fragment() {
         binding.profileUserBio.setInitialScale(1)
         val styledHtml = getFullAniHTML(
             user.about ?: "",
-            ContextCompat.getColor(activity, R.color.bg_opp)
+            ContextCompat.getColor(requireContext(), R.color.bg_opp)
         )
         binding.profileUserBio.loadDataWithBaseURL(
             null,
@@ -96,7 +95,7 @@ class ProfileFragment : Fragment() {
         )
         binding.profileUserBio.setBackgroundColor(
             ContextCompat.getColor(
-                activity,
+                requireContext(),
                 android.R.color.transparent
             )
         )
@@ -106,7 +105,7 @@ class ProfileFragment : Fragment() {
                 super.onPageFinished(view, url)
                 binding.profileUserBio.setBackgroundColor(
                     ContextCompat.getColor(
-                        activity,
+                        requireContext(),
                         android.R.color.transparent
                     )
                 )
@@ -162,7 +161,7 @@ class ProfileFragment : Fragment() {
         super.onResume()
         if (_binding != null) {
             binding.root.requestLayout()
-            binding.root.setBaseline(activity.binding.profileNavBarContainer)
+            binding.root.setBaseline(requireActivity().findViewById(R.id.navbar_container))
         }
     }
 
