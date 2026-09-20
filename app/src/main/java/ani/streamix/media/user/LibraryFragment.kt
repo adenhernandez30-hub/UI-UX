@@ -26,7 +26,7 @@ import ani.streamix.statusBarHeight
 import ani.streamix.themes.ThemeManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.android.material.popupmenu.PopupMenu
+import androidx.appcompat.widget.PopupMenu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
