@@ -1,0 +1,49 @@
+workflows:
+  samehadaku-media3-e2e:
+    name: Samehadaku Provider -> Media3 E2E
+    instance_type: linux_x2
+    max_build_duration: 60
+
+    environment:
+      java: 17
+      groups:
+        - emulatorwtf
+        - github_credentials
+
+    scripts:
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+
+      - name: Fetch Provider v2
+        script: |
+          set -euo pipefail
+          rm -rf Provider
+          git -c credential.helper='!f() { echo username=x-access-token; echo password=$GITHUB_TOKEN; }; f'             clone --depth 1 --branch rewrite/provider-v2             https://github.com/adenhernandez30-hub/Provider.git Provider
+          mkdir -p app/src/androidTest/java/com/kakaanime/providerv2
+          cp -R Provider/provider-v2/src/main/java/com/kakaanime/providerv2/.             app/src/androidTest/java/com/kakaanime/providerv2/
+
+      - name: Build app and instrumentation APK
+        script: |
+          set -euo pipefail
+          ./gradlew             :app:assembleGoogleDebug             :app:assembleGoogleDebugAndroidTest             --stacktrace             --no-daemon
+
+      - name: Run Samehadaku on emulator.wtf
+        script: |
+          set -euo pipefail
+          APP_APK=$(find app/build/outputs/apk -type f -name 'app-google-debug*.apk' ! -name '*androidTest*.apk' | head -n 1)
+          TEST_APK=$(find app/build/outputs/apk -type f -name '*androidTest*.apk' | head -n 1)
+
+          test -n "$APP_APK"
+          test -n "$TEST_APK"
+
+          echo "APP_APK=$APP_APK"
+          echo "TEST_APK=$TEST_APK"
+
+          ew-cli             --app "$APP_APK"             --test "$TEST_APK"             --outputs-dir results
+
+    test_report: results/**/*.xml
+
+    artifacts:
+      - results/**
+      - app/build/outputs/apk/**/*.apk
