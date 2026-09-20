@@ -32,12 +32,8 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
         with:
-          packages: 'platform-tools emulator'
+          packages: 'platform-tools emulator platforms;android-37 build-tools;36.0.0'
           accept-android-sdk-licenses: true
-
-      - name: Install required Android SDK components
-        run: |
-          sdkmanager --install "platforms;android-37" "build-tools;36.0.0"
 
       - name: Prepare test-only Provider + Media3 harness
         shell: bash
@@ -319,13 +315,13 @@ jobs:
             ./gradlew :app:connectedGoogleDebugAndroidTest --tests '*SamehadakuMedia3E2ETest' --stacktrace --no-daemon
 
       - name: Capture Media3 evidence
-        if: always()
+        if: success()
         run: |
           adb logcat -d -s SamehadakuMedia3E2E:V ExoPlayerImpl:V EventLogger:V '*:S' > samehadaku-media3-log.txt || true
           adb exec-out screencap -p > samehadaku-media3-screen.png || true
 
       - name: Upload Media3 evidence
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: samehadaku-media3-e2e-evidence
