@@ -3,7 +3,6 @@ package ani.streamix.home
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,19 +25,14 @@ import ani.streamix.databinding.LayoutTrendingBinding
 import ani.streamix.getAppString
 import ani.streamix.getThemeColor
 import ani.streamix.loadImage
-import ani.streamix.media.CalendarActivity
-import ani.streamix.media.GenreActivity
 import ani.streamix.media.Media
 import ani.streamix.media.MediaAdaptor
 import ani.streamix.media.MediaListViewActivity
 import ani.streamix.media.SearchActivity
-import ani.streamix.openLinkInCustomTab
-import ani.streamix.profile.ProfileActivity
 import ani.streamix.px
 import ani.streamix.setSafeOnClickListener
 import ani.streamix.setSlideIn
 import ani.streamix.setSlideUp
-import ani.streamix.settings.SettingsDialogFragment
 import ani.streamix.settings.saving.PrefManager
 import ani.streamix.settings.saving.PrefName
 import ani.streamix.statusBarHeight
@@ -101,39 +95,20 @@ class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHold
         }
 
         trendingBinding.userAvatar.setSafeOnClickListener {
-            val dialogFragment =
-                SettingsDialogFragment.newInstance(SettingsDialogFragment.Companion.PageType.ANIME)
-            dialogFragment.show((it.context as AppCompatActivity).supportFragmentManager, "dialog")
-        }
-        trendingBinding.userAvatar.setOnLongClickListener { view ->
-            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-            val rescueMode: Boolean = PrefManager.getVal(PrefName.RescueMode)
-            if (!rescueMode) {
-                ContextCompat.startActivity(
-                    view.context,
-                    Intent(view.context, ProfileActivity::class.java)
-                        .putExtra("userId", Anilist.userid), null
-                )
-            } else {
-                val malUsername = MAL.username
-                if (!malUsername.isNullOrBlank()) {
-                    openLinkInCustomTab("https://myanimelist.net/profile/$malUsername")
-                } else {
-                    ani.streamix.toast(view.context.getString(R.string.rescue_mode_active))
-                }
-            }
-            false
+            ContextCompat.startActivity(
+                it.context,
+                Intent(it.context, SearchActivity::class.java)
+                    .putExtra("type", "ANIME")
+                    .putExtra("openFilter", true),
+                null
+            )
         }
 
         trendingBinding.searchBar.setEndIconOnClickListener {
             trendingBinding.searchBar.performClick()
         }
 
-        val isRescueMode: Boolean = PrefManager.getVal(PrefName.RescueMode)
-        trendingBinding.notificationCount.isVisible = !isRescueMode && Anilist.unreadNotificationCount > 0
-                && PrefManager.getVal<Boolean>(PrefName.ShowNotificationRedDot) == true
-        trendingBinding.notificationCount.text = Anilist.unreadNotificationCount.toString()
-
+        trendingBinding.notificationCount.isVisible = false
         listOf(
             binding.animePreviousSeason,
             binding.animeThisSeason,
@@ -141,24 +116,6 @@ class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHold
         ).forEachIndexed { i, it ->
             it.setSafeOnClickListener { onSeasonClick.invoke(i) }
             it.setOnLongClickListener { onSeasonLongClick.invoke(i) }
-        }
-
-        binding.animeGenreImage.loadImage("https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCOcDmneX.jpg")
-        binding.animeCalendarImage.loadImage("https://s4.anilist.co/file/anilistcdn/media/anime/banner/125367-hGPJLSNfprO3.jpg")
-
-        binding.animeGenre.setOnClickListener {
-            ContextCompat.startActivity(
-                it.context,
-                Intent(it.context, GenreActivity::class.java).putExtra("type", "ANIME"),
-                null
-            )
-        }
-        binding.animeCalendar.setOnClickListener {
-            ContextCompat.startActivity(
-                it.context,
-                Intent(it.context, CalendarActivity::class.java),
-                null
-            )
         }
 
         val rescueMode = PrefManager.getVal<Boolean>(PrefName.RescueMode)
@@ -215,6 +172,23 @@ class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHold
             LayoutAnimationController(setSlideIn(), 0.25f)
         binding.animeSeasonsCont.layoutAnimation =
             LayoutAnimationController(setSlideIn(), 0.25f)
+    }
+
+    fun updateContinue(adaptor: MediaAdaptor, media: MutableList<Media>) {
+        binding.apply {
+            init(
+                adaptor,
+                animeContinueRecyclerView,
+                animeContinueProgressBar,
+                animeContinue,
+                animeContinueMore,
+                getAppString(R.string.continue_watching),
+                media
+            )
+            if (adaptor.itemCount == 0) {
+                animeContinueContainer.visibility = View.GONE
+            }
+        }
     }
 
     fun updateRecent(adaptor: MediaAdaptor, media: MutableList<Media>) {
