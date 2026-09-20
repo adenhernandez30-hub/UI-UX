@@ -470,7 +470,12 @@ class SettingsCommonActivity : AppCompatActivity() {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 setHasFixedSize(true)
             }
-            // Legacy preference values remain stable: 0=Anime, 1=Home(old), 2=Manga.\n            // MainActivity now maps legacy value 1 to the Social destination.\n            uiSettingsHome.contentDescription = getString(R.string.social)\n            uiSettingsHome.setImageResource(R.drawable.ic_round_comment_24)\n\n            var previousStart: View =
+            // Legacy preference values remain stable: 0=Anime, 1=Home(old), 2=Manga.
+            // MainActivity now maps legacy value 1 to the Social destination.
+            uiSettingsHome.contentDescription = getString(R.string.social)
+            uiSettingsHome.setImageResource(R.drawable.ic_round_comment_24)
+
+            var previousStart: View =
                 when (PrefManager.getVal<Int>(PrefName.DefaultStartUpTab)) {
                     0 -> uiSettingsAnime
                     1 -> uiSettingsHome
