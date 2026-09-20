@@ -128,7 +128,7 @@ class StatsFragment :
         super.onResume()
         if (_binding != null) {
             binding.statisticList.visibility = View.VISIBLE
-            binding.statisticList.setBaseline(activity.binding.profileNavBarContainer!!)
+            binding.statisticList.setBaseline(requireActivity().findViewById(R.id.navbar_container))
             binding.root.requestLayout()
             if (!loadedFirstTime) {
                 viewLifecycleOwner.lifecycleScope.launch {
