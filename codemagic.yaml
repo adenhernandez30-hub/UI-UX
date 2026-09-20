@@ -41,8 +41,8 @@ workflows:
           echo "TEST_APK=$TEST_APK"
 
           ew-cli             --app "$APP_APK"             --test "$TEST_APK"             --outputs-dir results
+        test_report: results/**/*.xml
 
-    test_report: results/**/*.xml
 
     artifacts:
       - results/**
