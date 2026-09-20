@@ -29,10 +29,15 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools emulator'
+          accept-android-sdk-licenses: true
+
       - name: Install required Android SDK components
         run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-37" "build-tools;36.0.0"
+          sdkmanager --install "platforms;android-37" "build-tools;36.0.0"
 
       - name: Prepare test-only Provider + Media3 harness
         shell: bash
