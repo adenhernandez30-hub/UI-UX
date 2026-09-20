@@ -9,7 +9,7 @@
 
     <nl.joery.animatedbottombar.AnimatedBottomBar
         android:id="@+id/navbar"
-        android:layout_width="240dp"
+        android:layout_width="320dp"
         android:layout_height="56dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
@@ -23,7 +23,7 @@
         app:abb_badgeBackgroundColor="#F44336"
         app:abb_indicatorColor="?attr/colorTertiary"
         app:abb_indicatorLocation="bottom"
-        app:abb_indicatorMargin="28dp"
+        app:abb_indicatorMargin="20dp"
         app:abb_selectedTabType="text"
         app:abb_tabColor="?attr/colorOutline"
         app:abb_tabColorDisabled="?attr/colorPrimaryContainer"
