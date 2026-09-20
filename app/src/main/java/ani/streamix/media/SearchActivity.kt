@@ -350,7 +350,13 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        binding.searchRecyclerView.post { runInitialSearchActions(notSet) }
+        binding.searchRecyclerView.post {
+            runInitialSearchActions(notSet)
+            if (intent.getBooleanExtra("openFilter", false) &&
+                (searchType == SearchType.ANIME || searchType == SearchType.MANGA)) {
+                SearchFilterBottomDialog().show(supportFragmentManager, "search_filter")
+            }
+        }
     }
 
     fun emptyMediaAdapter() {
